@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import Usuario from "../models/User.js"
 
 const CommentSchema = mongoose.Schema({
   autor: {

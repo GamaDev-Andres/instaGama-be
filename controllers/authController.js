@@ -1,12 +1,8 @@
 import bcryptjs from 'bcryptjs';
+
+import { getPostsUser } from '../helpers/db-services.js';
 import generarJWT from '../helpers/jwt.js';
 import Usuario from '../models/User.js';
-
-
-/*
-TODO:arreglar que el usuario no le devuelva al cliente la contraseña
-y otros datos innecesarios
-*/
 
 // api/auth
 export const loginUser = async (req, res) => {
@@ -28,8 +24,10 @@ export const loginUser = async (req, res) => {
       });
     }
     const token = await generarJWT(usuario.id);
+    const posts = await getPostsUser(usuario.id)
+
     res.json({
-      usuario,
+      usuario: { ...usuario.toJSON(), posts },
       token
     })
 
@@ -53,8 +51,9 @@ export const renovarToken = async (req, res = response) => {
   }
   try {
     const token = await generarJWT(usuario.id);
+    const posts = await getPostsUser(usuario.id)
     res.json({
-      usuario,
+      usuario: { ...usuario.toJSON(), posts },
       token
     })
   } catch (error) {

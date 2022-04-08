@@ -7,7 +7,6 @@ const UserSchema = mongoose.Schema({
     required: [true, "el nombre del usuario es obligatorio."],
 
   },
-
   email: {
     type: String,
     required: [true, "el email del usuario es obligatorio"],
@@ -22,23 +21,6 @@ const UserSchema = mongoose.Schema({
     default: "https://res.cloudinary.com/dapa84kxy/image/upload/v1649317047/InstaGama/kisspng-user-profile-get-em-cardiovascular-disease-zingah-avatar-5ab7520468bc16.870439461521963524429_iy5c3i.jpg"
 
   },
-  posts: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Post"
-  }],
-  inbox: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Chat"
-    }
-  ],
-  historias: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Historia"
-    }
-  ]
-
 },
 )
 

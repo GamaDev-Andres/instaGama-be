@@ -2,10 +2,6 @@ import bcryptjs from 'bcryptjs'
 
 import generarJWT from '../helpers/jwt.js';
 import Usuario from "../models/User.js"
-/*
-TODO:arreglar que el usuario no le devuelva al cliente la contraseña
-y otros datos innecesarios
-*/
 
 export const getUser = (req, res) => {
   res.json({ msg: "get user" })
