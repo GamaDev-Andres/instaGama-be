@@ -1,5 +1,35 @@
-export const loginUser = async (req, res) => {
+import bcryptjs from 'bcryptjs'
 
-  return res.json({ msg: "todos los users" })
+import generarJWT from '../helpers/jwt.js';
+import Usuario from "../models/User.js"
+/*
+TODO:arreglar que el usuario no le devuelva al cliente la contraseña
+y otros datos innecesarios
+*/
+
+export const getUser = (req, res) => {
+  res.json({ msg: "get user" })
+}
+export const createUser = async (req, res = response) => {
+  const { email, password, name } = req.body
+  try {
+    const usuario = new Usuario({ email, password, name })
+
+    const salt = bcryptjs.genSaltSync()
+    usuario.password = bcryptjs.hashSync(password, salt)
+
+    await usuario.save()
+    const token = await generarJWT(usuario.id, usuario.name)
+    res.json({
+      usuario,
+      token
+    })
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      msg: "error en la peticion",
+    });
+  }
 
 }

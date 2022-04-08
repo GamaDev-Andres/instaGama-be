@@ -1,6 +1,6 @@
-import { Schema, model } from "mongoose";
+import mongoose from "mongoose";
 
-const UserSchema = Schema({
+const UserSchema = mongoose.Schema({
 
   name: {
     type: String,
@@ -23,23 +23,28 @@ const UserSchema = Schema({
 
   },
   posts: [{
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "Post"
   }],
   inbox: [
     {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Chat"
     }
   ],
   historias: [
     {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Historia"
     }
   ]
 
 },
 )
+UserSchema.methods.toJSON = function () {
+  const { __v, password, _id, ...usuario } = this.toObject();
+  usuario.id = _id
+  return usuario;
+}
 
-export default model("Usuario", UserSchema);
+export default mongoose.model("Usuario", UserSchema);
