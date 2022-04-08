@@ -59,7 +59,7 @@ export const renovarToken = async (req, res = response) => {
     })
   } catch (error) {
     console.log(error);
-    res.status(400).json({
+    res.status(500).json({
       msg: "error generando token"
     })
   }

@@ -1,29 +1,24 @@
-import { Schema, model } from "mongoose";
-const PostSchema = Schema({
+import mongoose from 'mongoose';
+import Comentario from "../models/Comment.js"
+
+const PostSchema = mongoose.Schema({
   url: {
     type: String,
   },
-  descripcion: String,
+  descripcion: { type: String, default: "" },
   autor: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "Usuario",
     required: [true, "el autor del post es obligatorio."]
   },
-  likes: [{
-    type: Schema.Types.ObjectId,
-    ref: "Usuario"
-  }],
-  comments: [{
-    type: Schema.Types.ObjectId,
-    ref: "Comentario"
-  }
-  ],
-  fecha: {
-    type: Date,
-    default: Date.now(),
-    required: [true, "la fecha del post es obligatoria."]
-  }
 
-})
 
-export default model("Post", PostSchema)
+}, { timestamps: true })
+
+PostSchema.methods.toJSON = function () {
+  const { __v, _id, ...post } = this.toObject();
+  post.id = _id
+  return post;
+
+}
+export default mongoose.model("Post", PostSchema)

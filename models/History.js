@@ -8,6 +8,6 @@ const HistorySchema = Schema({
   },
   descripcion: String,
 
-}, { expireAfterSeconds: 60 * 60 * 24 })
+}, { expireAfterSeconds: 86400 })
 
 export default model("Historia", HistorySchema)
