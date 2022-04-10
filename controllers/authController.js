@@ -1,6 +1,5 @@
 import bcryptjs from 'bcryptjs';
 
-import { getPostsUser } from '../helpers/db-services.js';
 import generarJWT from '../helpers/jwt.js';
 import Usuario from '../models/User.js';
 
@@ -24,10 +23,8 @@ export const loginUser = async (req, res) => {
       });
     }
     const token = await generarJWT(usuario.id);
-    const posts = await getPostsUser(usuario.id)
-
     res.json({
-      usuario: { ...usuario.toJSON(), posts },
+      usuario,
       token
     })
 
@@ -51,9 +48,8 @@ export const renovarToken = async (req, res = response) => {
   }
   try {
     const token = await generarJWT(usuario.id);
-    const posts = await getPostsUser(usuario.id)
     res.json({
-      usuario: { ...usuario.toJSON(), posts },
+      usuario,
       token
     })
   } catch (error) {

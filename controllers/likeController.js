@@ -1,5 +1,5 @@
 
-import Like from '../models/Like.js';
+import Post from '../models/Post.js';
 
 export const handleLike = async (req, res) => {
 
@@ -8,20 +8,28 @@ export const handleLike = async (req, res) => {
 
   try {
 
-    let like = await Like.findOne({ idPost, autor: id })
-    if (like) {
-      await Like.deleteOne({
-        idPost, autor: id
-      })
-      return res.json({
-        msg: "like eliminado"
-      })
+    let post = await Post.findById(idPost)
+    if (post.likes.includes(id)) {
+      post.likes = post.likes.filter(el =>
+        el.toString() !== id
+      )
+    } else {
+      post.likes.push(id)
     }
-    like = new Like({ idPost, autor: id })
-    await like.save()
+    await post.save()
+    // if (like) {
+    //   await Like.deleteOne({
+    //     idPost, autor: id
+    //   })
+    //   return res.json({
+    //     msg: "like eliminado"
+    //   })
+    // }
+    // like = new Like({ idPost, autor: id })
+    // await like.save()
 
     res.json({
-      like
+      post
     })
 
   } catch (error) {

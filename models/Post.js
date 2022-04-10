@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import Comentario from "../models/Comment.js"
 
 const PostSchema = mongoose.Schema({
   url: {
@@ -11,6 +10,14 @@ const PostSchema = mongoose.Schema({
     ref: "Usuario",
     required: [true, "el autor del post es obligatorio."]
   },
+  coments: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Comentario"
+  }],
+  likes: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Usuario"
+  }]
 
 
 }, { timestamps: true })

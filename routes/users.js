@@ -1,13 +1,12 @@
 import express from "express";
 import { check } from 'express-validator';
 
-import { createUser, getUser } from '../controllers/usersController.js';
+import { createUser } from '../controllers/usersController.js';
 import { emailExiste } from '../helpers/db-validators.js';
 import { validarCampos } from '../middlewares/validar-campos.js';
 
 const router = express.Router()
 // api / users
-router.get("/", getUser)
 router.post("/create", [
   check("email", "El email es obligatorio").isEmail(),
   check("email").custom(emailExiste),

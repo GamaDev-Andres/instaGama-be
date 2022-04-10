@@ -1,5 +1,6 @@
 
 import Comment from '../models/Comment.js';
+import Post from '../models/Post.js';
 
 export const createComent = async (req, res) => {
 
@@ -9,7 +10,9 @@ export const createComent = async (req, res) => {
   try {
 
     const comentario = new Comment({ idPost, text, autor: id })
-    await comentario.save()
+    const post = await Post.findById(idPost)
+    post.coments.push(comentario.id)
+    await Promise.all([comentario.save(), post.save()])
 
     res.json({
       comentario
