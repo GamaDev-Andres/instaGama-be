@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { populateUserNested } from '../helpers/db-services.js';
 
 const UserSchema = mongoose.Schema({
 
@@ -29,46 +30,10 @@ const UserSchema = mongoose.Schema({
 )
 
 UserSchema.pre("findOne", function () {
-  this.populate({
-    path: "posts",
-    model: "Post",
-    populate: [{
-      path: "coments",
-      model: "Comentario",
-      select: "autor text",
-      populate: {
-        path: "autor",
-        model: "Usuario",
-        select: "name foto"
-      }
-    }, {
-      path: "likes",
-      model: "Usuario",
-      select: "foto name"
-
-    }],
-  })
+  populateUserNested(this)
 })
 UserSchema.pre("findById", function () {
-  this.populate({
-    path: "posts",
-    model: "Post",
-    populate: [{
-      path: "coments",
-      model: "Comentario",
-      select: "autor text",
-      populate: {
-        path: "autor",
-        model: "Usuario",
-        select: "name foto"
-      }
-    }, {
-      path: "likes",
-      model: "Usuario",
-      select: "foto name"
-
-    }],
-  })
+  populateUserNested(this)
 })
 UserSchema.methods.toJSON = function () {
   const { __v, password, _id, ...usuario } = this.toObject();
