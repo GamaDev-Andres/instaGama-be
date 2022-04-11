@@ -25,3 +25,71 @@ export const createComent = async (req, res) => {
     })
   }
 }
+export const deleteComent = async (req, res) => {
+
+  const { idComent } = req.params
+  const { idPost } = req.body
+  const { id } = req.usuario
+
+  try {
+
+    const comentario = await Comment.findById(idComent)
+    if (!comentario) {
+      return res.status(404).json({
+        msg: "El comentario que intenta eliminar no existe"
+      })
+    }
+    if (id !== comentario.autor.toString()) {
+      return res.status(400).json({
+        msg: "Este usuario no tiene permitido eliminar este comentario."
+      })
+    }
+    const post = await Post.findById(idPost)
+    post.coments = post.coments.filter(coment => coment !== idComent)
+
+    await Promise.all([Comment.findByIdAndDelete(idComent), post.save()])
+
+    res.json({
+      ok: true,
+      post
+    })
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      msg: "error servidor"
+    })
+  }
+}
+export const updateComent = async (req, res) => {
+
+  const { idComent } = req.params
+  const { id } = req.usuario
+  const { text } = req.body
+
+  try {
+
+    const comentario = await Comment.findById(idComent)
+    if (!comentario) {
+      return res.status(404).json({
+        msg: "El comentario que intenta actualizar no existe"
+      })
+    }
+    if (id !== comentario.autor.toString()) {
+      return res.status(400).json({
+        msg: "Este usuario no tiene permitido actualizar este comentario."
+      })
+    }
+    await Comment.findByIdAndUpdate(idComent, { text })
+
+    res.json({
+      ok: true
+    })
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      msg: "error servidor"
+    })
+  }
+}
