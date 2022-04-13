@@ -8,5 +8,5 @@ export const populateUserNested = function (that) {
       select: "foto name"
 
     },
-  })
+  }).populate("histories", "url descripcion")
 }

@@ -34,7 +34,13 @@ const UserSchema = mongoose.Schema({
   followers: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: "Usuario"
-  }]
+  }],
+  histories: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Historia"
+    }
+  ]
 },
 )
 
@@ -45,7 +51,7 @@ UserSchema.pre("findById", function () {
   populateUserNested(this)
 })
 UserSchema.methods.toJSON = function () {
-  const { __v, password, _id, ...usuario } = this.toObject();
+  const { __v, password, _id, email, ...usuario } = this.toObject();
   usuario.id = _id
   return usuario;
 }

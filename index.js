@@ -7,6 +7,7 @@ import routesAuth from "./routes/auth.js"
 import routesPost from "./routes/post.js"
 import routesComent from "./routes/coment.js"
 import routesLike from "./routes/like.js"
+import routesHistory from "./routes/history.js"
 
 const app = express()
 conectarDB()
@@ -19,6 +20,7 @@ app.use("/api/users", routesUser);
 app.use("/api/post", routesPost);
 app.use("/api/coment", routesComent);
 app.use("/api/like", routesLike);
+app.use("/api/history", routesHistory);
 
 
 const PORT = process.env.PORT || 4000

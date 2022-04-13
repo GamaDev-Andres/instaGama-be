@@ -1,13 +1,15 @@
-import { Schema, model } from "mongoose"
+import mongoose from 'mongoose'
 
-const HistorySchema = Schema({
+const HistorySchema = mongoose.Schema({
 
   url: {
     type: String,
     required: true,
   },
   descripcion: String,
+  expireAt: { type: Date, default: Date.now(), expires: 30 }
+}, {
+  timestamps: true,
+})
 
-}, { expireAfterSeconds: 86400 })
-
-export default model("Historia", HistorySchema)
+export default mongoose.model("Historia", HistorySchema)
