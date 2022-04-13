@@ -72,3 +72,37 @@ export const updatePost = async (req, res = response) => {
     })
   }
 }
+
+export const getPostsOfFollowing = async (req, res = response) => {
+
+  const { id } = req.usuario
+  try {
+
+    const user = await Usuario.find({ _id: id }).populate({
+      path: "following",
+      model: "Usuario",
+      select: "posts",
+      populate: {
+        path: "posts",
+        model: "Post",
+        populate: {
+          path: "autor",
+          select: "name foto"
+        }
+      }
+    }).select("following")
+
+    const posts = user[0].following.map(el => el.posts).flat()
+    res.json({
+      ok: true,
+      posts
+    })
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      msg: "error servidor"
+    })
+  }
+}
+

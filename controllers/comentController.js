@@ -93,3 +93,37 @@ export const updateComent = async (req, res) => {
     })
   }
 }
+export const getComentsOfPost = async (req, res) => {
+
+  const { idPost } = req.params
+
+  try {
+
+    const post = await Post.findById(idPost).populate({
+      path: "coments",
+      model: "Comentario",
+      populate: {
+        path: "autor",
+        model: "Usuario",
+        select: "foto name"
+      }
+    })
+    if (!post) {
+      return res.status(404).json({
+        msg: "El post del que quiere los comentarios no existe"
+      })
+    }
+    const comentarios = post.coments
+
+    res.json({
+      ok: true,
+      comentarios
+    })
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      msg: "error servidor"
+    })
+  }
+}

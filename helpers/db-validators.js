@@ -1,5 +1,6 @@
 import Usuario from "../models/User.js"
 import Post from '../models/Post.js';
+import Comentario from '../models/Comment.js';
 export const emailExiste = async (email = '') => {
 
   const existeEmail = await Usuario.findOne({ email });
@@ -19,5 +20,11 @@ export const existePostPorId = async (idPost) => {
   const existePostPorId = await Post.findById(idPost);
   if (!existePostPorId) {
     throw new Error(`El id no existe ${idPost}`);
+  }
+}
+export const existeComentPorId = async (idComent) => {
+  const existeComentarioPorId = await Comentario.findById(idComent);
+  if (!existeComentarioPorId) {
+    throw new Error(`El id no existe ${idComent}`);
   }
 }

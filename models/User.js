@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 import { populateUserNested } from '../helpers/db-services.js';
 
 const UserSchema = mongoose.Schema({
@@ -25,6 +26,14 @@ const UserSchema = mongoose.Schema({
   posts: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: "Post"
+  }],
+  following: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Usuario"
+  }],
+  followers: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Usuario"
   }]
 },
 )
