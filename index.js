@@ -8,6 +8,7 @@ import routesPost from "./routes/post.js"
 import routesComent from "./routes/coment.js"
 import routesLike from "./routes/like.js"
 import routesHistory from "./routes/history.js"
+import routesInbox from "./routes/inbox.js"
 
 const app = express()
 conectarDB()
@@ -21,6 +22,7 @@ app.use("/api/post", routesPost);
 app.use("/api/coment", routesComent);
 app.use("/api/like", routesLike);
 app.use("/api/history", routesHistory);
+app.use("/api/inbox", routesInbox);
 
 
 const PORT = process.env.PORT || 4000
