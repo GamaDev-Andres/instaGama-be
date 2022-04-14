@@ -13,7 +13,7 @@ const router = express.Router()
 router.use(validarJWT)
 
 router.post("/create", [
-  check("url", "La url de la imagen es obligatoria").not().isEmpty(),
+  check("url", "La url de la imagen es obligatoria").isURL(),
 ], validarCampos, validarUser, createPost)
 
 router.delete("/:id", [

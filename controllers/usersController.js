@@ -6,7 +6,29 @@ import Usuario from "../models/User.js"
 export const getUser = async (req, res = response) => {
   const { id } = req.params
   try {
-    const usuario = await Usuario.findById(id).select("-inbox")
+    const usuario = await Usuario.findById(id)
+
+    res.json({
+      usuario,
+    })
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      msg: "error en la peticion",
+    });
+  }
+
+}
+export const updateUser = async (req, res = response) => {
+  const { id } = req.usuario
+  const body = req.body
+  try {
+    if (body.password) {
+      const salt = bcryptjs.genSaltSync()
+      body.password = bcryptjs.hashSync(body.password, salt)
+    }
+    const usuario = await Usuario.findByIdAndUpdate(id, body)
 
     res.json({
       usuario,

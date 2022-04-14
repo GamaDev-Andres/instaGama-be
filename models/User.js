@@ -35,12 +35,7 @@ const UserSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Usuario"
   }],
-  histories: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Historia"
-    }
-  ]
+
 },
 )
 
