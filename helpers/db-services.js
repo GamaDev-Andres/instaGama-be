@@ -8,5 +8,19 @@ export const populateUserNested = function (that) {
       select: "foto name"
 
     },
+  }).populate({
+    path: "inbox",
+    populate: [
+      {
+        path: "with",
+        model: "Usuario",
+        select: "foto name",
+
+      }
+      , {
+        path: "mensajes",
+        model: "Mensaje",
+        select: "-__v"
+      }]
   })
 }

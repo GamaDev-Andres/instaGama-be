@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import crypto from "crypto"
 import { populateUserNested } from '../helpers/db-services.js';
 
 const UserSchema = mongoose.Schema({
@@ -44,21 +43,8 @@ const UserSchema = mongoose.Schema({
       },
       mensajes: [
         {
-
-          autor: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Usuario",
-            required: true
-          },
-          mensaje: {
-            type: String,
-            required: true
-          },
-          fecha: {
-            type: Date,
-            default: Date.now(),
-            required: true
-          }
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Mensaje"
 
         }
       ]
