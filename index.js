@@ -11,7 +11,7 @@ import routesComent from "./routes/coment.js"
 import routesLike from "./routes/like.js"
 import routesHistory from "./routes/history.js"
 import routesInbox from "./routes/inbox.js"
-import { socketController } from './sockets/controller.js'
+import { socketController } from './sockets/controllers/controller.js'
 
 const app = express()
 const server = http.createServer(app)
