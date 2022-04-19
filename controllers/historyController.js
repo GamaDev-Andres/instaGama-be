@@ -27,10 +27,10 @@ export const getHistories = async (req, res) => {
   const { uid } = req.params
 
   try {
-    const historias = await History.find({ autor: uid }).populate("autor", "foto name")
+    const historias = await History.find({ autor: uid }).populate("autor", "foto name userName")
 
     res.json({
-      ok: true,
+
       historias
     })
 

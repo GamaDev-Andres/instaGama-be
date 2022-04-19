@@ -105,7 +105,7 @@ export const getComentsOfPost = async (req, res) => {
       populate: {
         path: "autor",
         model: "Usuario",
-        select: "foto name"
+        select: "foto name userName"
       }
     })
     if (!post) {

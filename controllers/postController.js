@@ -87,7 +87,7 @@ export const getPostsOfFollowing = async (req, res = response) => {
         model: "Post",
         populate: {
           path: "autor",
-          select: "name foto"
+          select: "name foto userName"
         }
       }
     }).select("following")

@@ -6,7 +6,7 @@ import Usuario from "../models/User.js"
 export const getUser = async (req, res = response) => {
   const { id } = req.params
   try {
-    const usuario = await Usuario.findById(id)
+    const usuario = await Usuario.findOne({ userName: id })
 
     res.json({
       usuario,
@@ -43,9 +43,9 @@ export const updateUser = async (req, res = response) => {
 
 }
 export const createUser = async (req, res = response) => {
-  const { email, password, name } = req.body
+  const { email, password, name, userName } = req.body
   try {
-    const usuario = new Usuario({ email, password, name })
+    const usuario = new Usuario({ email, password, name, userName })
 
     const salt = bcryptjs.genSaltSync()
     usuario.password = bcryptjs.hashSync(password, salt)
@@ -106,7 +106,7 @@ export const getFollowers = async (req, res = response) => {
     const usuario = await Usuario.find({ _id: id }).populate({
       path: "followers",
       model: "Usuario",
-      select: "name foto"
+      select: "name foto userName"
     }).select("followers")
 
     const followers = usuario[0].followers
@@ -130,7 +130,7 @@ export const getFollowing = async (req, res = response) => {
     const usuario = await Usuario.find({ _id: id }).populate({
       path: "following",
       model: "Usuario",
-      select: "name foto"
+      select: "name foto userName"
     }).select("following")
 
     const following = usuario[0].following

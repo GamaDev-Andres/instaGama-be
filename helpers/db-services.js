@@ -2,19 +2,23 @@ export const populateUserNested = function (that) {
   that.populate({
     path: "posts",
     model: "Post",
-    populate: {
+    populate: [{
+      path: "autor",
+      model: "Usuario",
+      select: "name foto userName"
+    }, {
       path: "likes",
       model: "Usuario",
-      select: "foto name"
+      select: "foto name userName"
 
-    },
+    }],
   }).populate({
     path: "inbox",
     populate: [
       {
         path: "with",
         model: "Usuario",
-        select: "foto name",
+        select: "foto name userName",
 
       }
       , {

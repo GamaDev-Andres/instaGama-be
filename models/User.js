@@ -8,6 +8,15 @@ const UserSchema = mongoose.Schema({
     required: [true, "el nombre del usuario es obligatorio."],
 
   },
+  userName: {
+    type: String,
+    unique: true,
+    required: [true, "el username es obligatorio"],
+    minlength: [3, "username demasiado corto"],
+    maxlength: [12, "username demasiado largo"],
+    trim: true
+
+  },
   email: {
     type: String,
     required: [true, "el email del usuario es obligatorio"],
