@@ -15,21 +15,13 @@ export const handleLike = async (req, res) => {
       )
     } else {
       post.likes.push(id)
+
     }
     await post.save()
-    // if (like) {
-    //   await Like.deleteOne({
-    //     idPost, autor: id
-    //   })
-    //   return res.json({
-    //     msg: "like eliminado"
-    //   })
-    // }
-    // like = new Like({ idPost, autor: id })
-    // await like.save()
+    post = await Post.findById(idPost).populate("autor", "foto name username").populate("likes", "foto name username")
 
     res.json({
-      post
+      post: post.toObject()
     })
 
   } catch (error) {

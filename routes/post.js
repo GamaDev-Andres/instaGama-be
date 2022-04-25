@@ -1,7 +1,7 @@
 import express from "express"
 import { check } from 'express-validator'
 
-import { createPost, deletePost, getPostsOfFollowing, updatePost } from '../controllers/postController.js'
+import { createPost, deletePost, getPost, getPostsOfFollowing, updatePost } from '../controllers/postController.js'
 import { existePostPorId } from '../helpers/db-validators.js'
 import { validarCampos } from '../middlewares/validar-campos.js'
 import { validarUser } from '../middlewares/validar-usuario.js'
@@ -27,7 +27,7 @@ router.put("/:id", [
   check("descripcion", "La descripcion es necesaria para actualizar").not().isEmpty(),
 ], validarCampos, validarUser, updatePost)
 
-router.get("/following", [
-], validarCampos, validarUser, getPostsOfFollowing)
+router.get("/following", validarUser, getPostsOfFollowing)
+router.get("/:id", getPost)
 
 export default router

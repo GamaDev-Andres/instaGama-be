@@ -91,11 +91,32 @@ export const getPostsOfFollowing = async (req, res = response) => {
         }
       }
     }).select("following")
-
     const posts = user[0].following.map(el => el.posts).flat()
     res.json({
       ok: true,
-      posts
+      posts: posts
+    })
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      msg: "error servidor"
+    })
+  }
+}
+export const getPost = async (req, res = response) => {
+
+  const { id } = req.params
+  try {
+
+    const post = await Post.findOne({ _id: id }).populate("autor", "name foto userName").select("-__v")
+    if (!post) {
+      return res.status(404).json({
+        msg: "El post no existe"
+      })
+    }
+    res.json({
+      post: post.toObject()
     })
 
   } catch (error) {

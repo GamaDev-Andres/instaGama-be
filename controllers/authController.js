@@ -9,19 +9,21 @@ export const loginUser = async (req, res) => {
 
   try {
 
-    const usuario = await Usuario.findOne({ email });
+    const usuario = await Usuario.findOne({ email })
     if (!usuario) {
       return res.status(400).json({
         msg: 'Usuario / Password no son correctos - correo'
       });
     }
-
+    console.log(usuario);
     const validPassword = bcryptjs.compareSync(password, usuario.password);
     if (!validPassword) {
       return res.status(400).json({
         msg: 'Usuario / Password no son correctos - password'
       });
     }
+    const { userName, name, foto, following,
+    } = usuario
     const token = await generarJWT(usuario.id);
     res.json({
       usuario,
@@ -48,8 +50,9 @@ export const renovarToken = async (req, res = response) => {
   }
   try {
     const token = await generarJWT(usuario.id);
+    const { name, userName, foto, following, id } = usuario
     res.json({
-      usuario,
+      usuario: { name, userName, foto, following, id },
       token
     })
   } catch (error) {
