@@ -1,18 +1,19 @@
+import { existeUsuarioPorId } from '../../helpers/db-validators.js';
 import Message from '../../models/Message.js';
 
-export const createMessage = async ({ uid, mensaje }, cb, usuario) => {
+export const createMessage = async ({ uid, mensaje }, cb, usuario, socket) => {
 
   try {
+    const [userDestino, userRemitente] = await Promise.all([existeUsuarioPorId(uid), existeUsuarioPorId(usuario.id)])
+    // comprobar que si no le envio token si pase , y que tome el catcch
+    // de la fn existeUsuarioPorID
+    if (!userDestino) {
+      return cb({ error: "no existe userDestino" }, null)
+    }
 
-    const userDestino = await existeUsuarioPorId(uid)
-    //comprobar que si no le envio token si pase , y que tome el catcch
-    //de la fn existeUsuarioPorID
-    // if (!userDestino) {
-    //   return cb(userDestino)
-    // }
-    const mensajeDb = new Message({ mensaje, autor: usuario.id })
-    if (usuario.inbox.some(el => el.with.toString() === uid)) {
-      usuario.inbox = usuario.inbox.map(el => {
+    const mensajeDb = new Message({ mensaje, autor: userRemitente.id })
+    if (userRemitente.inbox.some(el => el.with.toString() === uid)) {
+      userRemitente.inbox = userRemitente.inbox.map(el => {
 
         if (el.with.toString() === uid) {
 
@@ -27,12 +28,12 @@ export const createMessage = async ({ uid, mensaje }, cb, usuario) => {
         with: uid,
         mensajes: [mensajeDb]
       }
-      usuario.inbox.push(chat)
+      userRemitente.inbox.push(chat)
     }
-    if (userDestino.inbox.some(el => el.with.toString() === usuario.id)) {
+    if (userDestino.inbox.some(el => el.with.toString() === userRemitente.id)) {
       userDestino.inbox = userDestino.inbox.map(el => {
 
-        if (el.with.toString() === usuario.id) {
+        if (el.with.toString() === userRemitente.id) {
 
           el.mensajes.push(mensajeDb)
 
@@ -41,14 +42,17 @@ export const createMessage = async ({ uid, mensaje }, cb, usuario) => {
       })
     } else {
       const chat = {
-        with: usuario.id,
+        with: userRemitente.id,
         mensajes: [mensajeDb]
       }
       userDestino.inbox.push(chat)
     }
-    await Promise.all([userDestino.save(), usuario.save(), mensajeDb.save()])
+
+    await Promise.all([userDestino.save(), userRemitente.save(), mensajeDb.save()])
 
     socket.to(uid).emit("mensaje", mensajeDb)
+    cb(false, mensajeDb)
+
   } catch (error) {
     console.log(error);
   }

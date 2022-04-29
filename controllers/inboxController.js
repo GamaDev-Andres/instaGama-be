@@ -9,11 +9,12 @@ export const sendMessage = async (req, res) => {
 
   try {
 
-    const userDestino = await User.findById(uid)
+    const remitente = await User.findById(usuario.id).select("inbox")
+    const userDestino = await User.findById(uid).select("inbox")
     const mensaje = new Message({ mensaje: text, autor: usuario.id })
 
-    if (usuario.inbox.some(el => el.with.toString() === uid)) {
-      usuario.inbox = usuario.inbox.map(el => {
+    if (remitente.inbox.some(el => el.with.toString() === uid)) {
+      remitente.inbox = remitente.inbox.map(el => {
 
         if (el.with.toString() === uid) {
 
@@ -28,12 +29,12 @@ export const sendMessage = async (req, res) => {
         with: uid,
         mensajes: [mensaje]
       }
-      usuario.inbox.push(chat)
+      remitente.inbox.push(chat)
     }
-    if (userDestino.inbox.some(el => el.with.toString() === usuario.id)) {
+    if (userDestino.inbox.some(el => el.with.toString() === remitente.id)) {
       userDestino.inbox = userDestino.inbox.map(el => {
 
-        if (el.with.toString() === usuario.id) {
+        if (el.with.toString() === remitente.id) {
 
           el.mensajes.push(mensaje)
 
@@ -42,12 +43,12 @@ export const sendMessage = async (req, res) => {
       })
     } else {
       const chat = {
-        with: usuario.id,
+        with: remitente.id,
         mensajes: [mensaje]
       }
       userDestino.inbox.push(chat)
     }
-    await Promise.all([userDestino.save(), usuario.save(), mensaje.save()])
+    await Promise.all([userDestino.save(), remitente.save(), mensaje.save()])
     res.json({
       ok: true,
       mensaje
@@ -119,29 +120,35 @@ export const deleteChat = async (req, res) => {
     })
   }
 }
-// export const getMessagesOfChat = async (req, res) => {
+export const getChats = async (req, res) => {
 
-//   const { cid } = req.params
-//   const { usuario } = req
+  const { usuario } = req
 
-//   try {
+  try {
 
-//     const chat=usuario.inbox.find(chat=>chat._id===cid)
-//     let mensajes=chat.mensajes
-//    mensajes= await Promise.all(mensajes.map(mensaje=>Message.findById(mensaje)))
-    
-//     usuario.inbox = usuario.inbox.filter(chat => chat._id !== cid)
-//     await usuario.save()
+    const chats = await User.find({ _id: usuario.id }).populate({
+      path: "inbox",
+      populate: [
+        {
+          path: "with",
+          model: "Usuario",
+          select: "username name foto"
+        },
+        {
+          path: "mensajes",
+          model: "Mensaje",
+        }
+      ]
+    }).select("inbox")
+    res.json({
+      ok: true,
+      chats: chats.map(chat => chat.inbox).flat()
+    })
 
-//     res.json({
-//       ok: true,
-//       usuario
-//     })
-
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({
-//       msg: "Error en servidor"
-//     })
-//   }
-// }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      msg: "Error en servidor"
+    })
+  }
+}

@@ -11,10 +11,11 @@ export const emailExiste = async (email = '') => {
 
 export const existeUsuarioPorId = async (id) => {
 
-  const existeUsuario = await Usuario.findById(id);
-  if (!existeUsuario) {
+  const existeUsuario = await Usuario.find({ _id: id });
+  if (!existeUsuario[0]) {
     throw new Error(`El id no existe ${id}`);
   }
+  return existeUsuario[0]
 }
 export const existePostPorId = async (idPost) => {
   const existePostPorId = await Post.findById(idPost);

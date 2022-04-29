@@ -78,7 +78,7 @@ export const followController = async (req, res = response) => {
     const userToFollow = await Usuario.findById(id)
     if (usuario.following.some(el => el.toString() === id)) {
       usuario.following = usuario.following.filter(idUser => idUser.toString() !== id)
-      userToFollow.followers = usuario.followers.filter(idUser => idUser.toString() !== usuario.id)
+      userToFollow.followers = userToFollow.followers.filter(idUser => idUser.toString() !== usuario.id)
     } else {
       usuario.following.push(id)
       userToFollow.followers.push(usuario.id)
