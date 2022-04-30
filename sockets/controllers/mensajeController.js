@@ -1,5 +1,6 @@
 import { existeUsuarioPorId } from '../../helpers/db-validators.js';
 import Message from '../../models/Message.js';
+import User from '../../models/User.js';
 
 export const createMessage = async ({ uid, mensaje }, cb, usuario, socket) => {
 
@@ -10,7 +11,8 @@ export const createMessage = async ({ uid, mensaje }, cb, usuario, socket) => {
     if (!userDestino) {
       return cb({ error: "no existe userDestino" }, null)
     }
-
+    let isFirstMessageUserRemitente = false
+    let isFirstMessageUserDestino = false
     const mensajeDb = new Message({ mensaje, autor: userRemitente.id })
     if (userRemitente.inbox.some(el => el.with.toString() === uid)) {
       userRemitente.inbox = userRemitente.inbox.map(el => {
@@ -28,6 +30,7 @@ export const createMessage = async ({ uid, mensaje }, cb, usuario, socket) => {
         with: uid,
         mensajes: [mensajeDb]
       }
+      isFirstMessageUserRemitente = true
       userRemitente.inbox.push(chat)
     }
     if (userDestino.inbox.some(el => el.with.toString() === userRemitente.id)) {
@@ -45,13 +48,49 @@ export const createMessage = async ({ uid, mensaje }, cb, usuario, socket) => {
         with: userRemitente.id,
         mensajes: [mensajeDb]
       }
+      isFirstMessageUserDestino = true
       userDestino.inbox.push(chat)
     }
-
     await Promise.all([userDestino.save(), userRemitente.save(), mensajeDb.save()])
 
-    socket.to(uid).emit("mensaje", mensajeDb)
-    cb(false, mensajeDb)
+    const objPopulate = {
+      path: "inbox",
+      populate: [{
+        path: "with",
+        model: "Usuario",
+        select: "name username foto",
+
+      },
+      {
+        path: "mensajes",
+        populate: {
+          path: "autor",
+          model: "Usuario",
+          select: "name username foto"
+        },
+
+      }]
+    }
+    const [user1, user2] = await Promise.all([User.populate(userRemitente, objPopulate), User.populate(userDestino, objPopulate)])
+    if (isFirstMessageUserDestino) {
+
+      const chatDestino = user2.inbox.find(chat => chat.with.id === userRemitente.id)
+      socket.to(uid).emit("chat", chatDestino)
+
+    } else {
+      socket.to(uid).emit("mensaje", mensajeDb)
+
+    }
+
+    if (isFirstMessageUserRemitente) {
+
+      const chatRemitente = user1.inbox.find(chat => chat.with.id === userDestino.id)
+      socket.emit("chat", chatRemitente)
+
+    } else {
+      cb(false, mensajeDb)
+
+    }
 
   } catch (error) {
     console.log(error);

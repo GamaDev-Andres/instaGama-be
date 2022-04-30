@@ -1,6 +1,7 @@
 
 import { Socket } from 'socket.io';
 import { comprobarJWT } from '../../helpers/comprobarJWT.js';
+import { createProvitionalChat } from './chatController.js';
 import { createMessage, deleteMessage } from './mensajeController.js';
 
 export const socketController = async (socket = new Socket()) => {
@@ -15,4 +16,5 @@ export const socketController = async (socket = new Socket()) => {
   // y asi que los mensajes coincidan en el tiempo (con el cb)
   socket.on("mensaje", (payload, cb) => createMessage(payload, cb, usuario, socket))
   socket.on("deleteMensaje", (payload, cb) => deleteMessage(payload, cb, usuario))
+  socket.on("newChat", (payload, cb) => createProvitionalChat(payload, cb))
 }
