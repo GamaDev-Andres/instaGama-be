@@ -2,10 +2,10 @@ import { existeUsuarioPorId } from '../../helpers/db-validators.js';
 import Message from '../../models/Message.js';
 import User from '../../models/User.js';
 
-export const createMessage = async ({ uid, mensaje }, cb, usuario, socket) => {
+export const createMessage = async ({ uid, mensaje, id }, cb, socket) => {
 
   try {
-    const [userDestino, userRemitente] = await Promise.all([existeUsuarioPorId(uid), existeUsuarioPorId(usuario.id)])
+    const [userDestino, userRemitente] = await Promise.all([existeUsuarioPorId(uid), existeUsuarioPorId(id)])
     // comprobar que si no le envio token si pase , y que tome el catcch
     // de la fn existeUsuarioPorID
     if (!userDestino) {

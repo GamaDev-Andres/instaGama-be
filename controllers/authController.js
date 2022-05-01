@@ -15,15 +15,13 @@ export const loginUser = async (req, res) => {
         msg: 'Usuario / Password no son correctos - correo'
       });
     }
-    console.log(usuario);
     const validPassword = bcryptjs.compareSync(password, usuario.password);
     if (!validPassword) {
       return res.status(400).json({
         msg: 'Usuario / Password no son correctos - password'
       });
     }
-    const { userName, name, foto, following,
-    } = usuario
+
     const token = await generarJWT(usuario.id);
     res.json({
       usuario,

@@ -31,6 +31,7 @@ app.use("/api/inbox", routesInbox);
 
 // server-side
 io.on("connection", socketController);
+console.log("corre");
 const PORT = process.env.PORT || 4000
 server.listen(PORT, () => {
   console.log("servidor funcionando en puerto: " + PORT);

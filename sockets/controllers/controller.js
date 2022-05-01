@@ -6,15 +6,34 @@ import { createMessage, deleteMessage } from './mensajeController.js';
 
 export const socketController = async (socket = new Socket()) => {
   console.log("connect");
-  const usuario = await comprobarJWT(socket.handshake.headers['x-token']);
-  if (!usuario) {
-    return socket.disconnect()
-  }
-  console.log("si token valido");
-  socket.join(usuario.id)
-  //contemplar idea de responderle algo al usuario que envia el mensaje
-  // y asi que los mensajes coincidan en el tiempo (con el cb)
-  socket.on("mensaje", (payload, cb) => createMessage(payload, cb, usuario, socket))
-  socket.on("deleteMensaje", (payload, cb) => deleteMessage(payload, cb, usuario))
-  socket.on("newChat", (payload, cb) => createProvitionalChat(payload, cb))
+  const createMessageListenner = (payload, cb) => createMessage(payload, cb, socket)
+  const deleteMessageListenner = (payload, cb) => deleteMessage(payload, cb)
+  const createProvitionalChatListenner = (payload, cb) => createProvitionalChat(payload, cb)
+  socket.on("logout", () => {
+
+    console.log("logout");
+    //contemplar idea de responderle algo al usuario que envia el mensaje
+    // y asi que los mensajes coincidan en el tiempo (con el cb)
+    // socket.use()
+    socket.off("mensaje", createMessageListenner)
+    socket.off("deleteMensaje", deleteMessageListenner)
+    socket.off("newChat", createProvitionalChatListenner)
+    // socket.off
+  })
+  socket.on("validado", async ({ token, id }) => {
+    const usuario = await comprobarJWT(token);
+    if (!usuario) {
+      console.log("user no validado con jwt");
+      return
+    }
+    console.log("validado");
+    socket.join(id)
+    //contemplar idea de responderle algo al usuario que envia el mensaje
+    // y asi que los mensajes coincidan en el tiempo (con el cb)
+    // socket.use()
+    socket.on("mensaje", createMessageListenner)
+    socket.on("deleteMensaje", deleteMessageListenner)
+    socket.on("newChat", createProvitionalChatListenner)
+    // socket.off
+  })
 }
