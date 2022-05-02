@@ -7,7 +7,7 @@ import { createMessage, deleteMessage } from './mensajeController.js';
 export const socketController = async (socket = new Socket()) => {
   console.log("connect");
   const createMessageListenner = (payload, cb) => createMessage(payload, cb, socket)
-  const deleteMessageListenner = (payload, cb) => deleteMessage(payload, cb)
+  const deleteMessageListenner = (payload, cb) => deleteMessage(payload, cb, socket)
   const createProvitionalChatListenner = (payload, cb) => createProvitionalChat(payload, cb)
   socket.on("logout", () => {
 

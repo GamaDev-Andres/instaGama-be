@@ -96,21 +96,22 @@ export const deleteMessage = async (req, res) => {
 export const deleteChat = async (req, res) => {
 
   const { cid } = req.params
-  const { usuario } = req
+  const { usuario: usuarioReq } = req
 
   try {
-
-    if (!usuario.inbox.some(chat => chat._id === cid)) {
+    let usuario = await User.find({ _id: usuarioReq.id })
+    usuario = usuario[0]
+    if (!usuario.inbox.some(chat => chat._id.toString() === cid)) {
       return res.status(404).json({
         msg: "el chat que intenta eliminar no existe"
       })
     }
-    usuario.inbox = usuario.inbox.filter(chat => chat._id !== cid)
+    usuario.inbox = usuario.inbox.filter(chat => chat._id.toString() !== cid)
     await usuario.save()
 
     res.json({
       ok: true,
-      usuario
+
     })
 
   } catch (error) {

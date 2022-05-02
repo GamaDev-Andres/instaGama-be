@@ -97,32 +97,33 @@ export const createMessage = async ({ uid, mensaje, id }, cb, socket) => {
   }
 
 }
-export const deleteMessage = async ({ mid }, cb, usuario) => {
+export const deleteMessage = async ({ mid, uid, u2id }, cb, socket) => {
 
   try {
     if (!mid) {
       throw new Error("el id del mensaje no se envio")
     }
-    if (!mensaje) {
-      throw new Error("el mensaje no se envio en el socket")
 
-    }
-    const mensaje = await Message.findByIdAndUpdate(mid, { mensaje: "El mensaje fue eliminado", mode: "off" })
+    const mensaje = await Message.findById(mid)
     if (!mensaje) {
       return cb({
         msg: "el mensaje que intenta eliminar no existe"
-      })
+      }, null)
     }
-    if (mensaje.autor.toString() !== id) {
+    if (mensaje.autor.toString() !== uid) {
       return cb({
         msg: "Este usuario no esta autorizado para eliminar este mensaje"
-      })
+      }, null)
     }
+    mensaje.mensaje = "El mensaje fue eliminado"
+    mensaje.mode = "off"
     await mensaje.save()
-    cb("todo ssalio bien")
+    cb(false, mensaje)
+    socket.to(u2id).emit("deleteMensaje", { mensaje, idChat: mensaje.autor.toString() })
+
   } catch (error) {
     console.log(error);
-    cb(error)
+    cb(error, null)
   }
 
 }
