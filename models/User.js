@@ -5,6 +5,7 @@ const UserSchema = mongoose.Schema({
 
   name: {
     type: String,
+    trim: true,
     required: [true, "el nombre del usuario es obligatorio."],
 
   },

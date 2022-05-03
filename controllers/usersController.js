@@ -147,3 +147,27 @@ export const getFollowing = async (req, res = response) => {
   }
 
 }
+export const confirmPassword = async (req, res = response) => {
+  const { usuario } = req
+  const { password } = req.body
+  try {
+    const user = await Usuario.find({ _id: usuario.id })
+    const passwordCurrent = user[0].password
+    const validPassword = bcryptjs.compareSync(password, passwordCurrent);
+    if (!validPassword) {
+      return res.status(400).json({
+        msg: 'Usuario / Password no son correctos - password'
+      });
+    }
+    res.json({
+      ok: true,
+    })
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      msg: "error en la peticion",
+    });
+  }
+
+}

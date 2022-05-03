@@ -1,7 +1,7 @@
 import express from "express";
 import { check } from 'express-validator';
 
-import { createUser, followController, getFollowers, getFollowing, getUser, updateUser } from '../controllers/usersController.js';
+import { confirmPassword, createUser, followController, getFollowers, getFollowing, getUser, updateUser } from '../controllers/usersController.js';
 import { emailExiste, existeUsuarioPorId } from '../helpers/db-validators.js';
 import { validarCampos } from '../middlewares/validar-campos.js';
 import { validarJWT } from '../middlewares/validarJWT.js';
@@ -24,6 +24,8 @@ router.put("/", validarJWT, [
 router.post("/follow/:id", validarJWT, [
   check("id").custom(existeUsuarioPorId),
 ], validarCampos, followController)
+
+router.post("/confirmPassword", validarJWT, confirmPassword)
 
 router.get("/:id", validarJWT, getUser)
 
