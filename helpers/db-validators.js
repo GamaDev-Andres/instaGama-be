@@ -28,6 +28,7 @@ export const existePostPorId = async (idPost) => {
   if (!existePostPorId) {
     throw new Error(`El id no existe ${idPost}`);
   }
+  return existePostPorId;
 }
 export const existeComentPorId = async (idComent) => {
   const existeComentarioPorId = await Comentario.findById(idComent);

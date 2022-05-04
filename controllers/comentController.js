@@ -105,19 +105,22 @@ export const getComentsOfPost = async (req, res) => {
       populate: {
         path: "autor",
         model: "Usuario",
-        select: "foto name userName"
+        select: "foto name userName "
       }
-    })
+    }).populate("autor", "userName name foto")
     if (!post) {
       return res.status(404).json({
-        msg: "El post del que quiere los comentarios no existe"
+        msg: "El post del que quiere los comentarios, no existe"
       })
     }
-    const comentarios = post.coments
 
+    const comentarios = post.coments
     res.json({
       ok: true,
-      comentarios
+      autor: post.autor,
+      descripcion: post.descripcion,
+      comentarios,
+      fecha: post.createdAt
     })
 
   } catch (error) {

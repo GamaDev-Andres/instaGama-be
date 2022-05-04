@@ -85,10 +85,20 @@ export const getPostsOfFollowing = async (req, res = response) => {
       populate: {
         path: "posts",
         model: "Post",
-        populate: {
+        populate: [{
+          path: "coments",
+          model: "Comentario",
+          populate: {
+            path: "autor",
+            model: "Usuario",
+            select: "name foto userName"
+          }
+
+        }
+          , {
           path: "autor",
           select: "name foto userName"
-        }
+        }]
       }
     }).select("following")
     const posts = user[0].following.map(el => el.posts).flat()
@@ -109,7 +119,15 @@ export const getPost = async (req, res = response) => {
   const { id } = req.params
   try {
 
-    const post = await Post.findOne({ _id: id }).populate("autor", "name foto userName").select("-__v")
+    const post = await Post.findOne({ _id: id }).populate({
+      path: "coments",
+      model: "Comentario",
+      populate: {
+        path: "autor",
+        model: "Usuario",
+        select: "foto name userName"
+      }
+    }).populate("autor", "name foto userName").select("-__v")
     if (!post) {
       return res.status(404).json({
         msg: "El post no existe"

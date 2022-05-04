@@ -2,6 +2,7 @@
 import { Socket } from 'socket.io';
 import { comprobarJWT } from '../../helpers/comprobarJWT.js';
 import { createProvitionalChat } from './chatController.js';
+import { createComent } from './comentController.js';
 import { createMessage, deleteMessage } from './mensajeController.js';
 
 export const socketController = async (socket = new Socket()) => {
@@ -9,16 +10,16 @@ export const socketController = async (socket = new Socket()) => {
   const createMessageListenner = (payload, cb) => createMessage(payload, cb, socket)
   const deleteMessageListenner = (payload, cb) => deleteMessage(payload, cb, socket)
   const createProvitionalChatListenner = (payload, cb) => createProvitionalChat(payload, cb)
-  socket.on("logout", () => {
+  const createComentListenner = (payload, cb) => createComent(payload, cb, socket)
+  socket.on("logout", (id) => {
 
     console.log("logout");
-    //contemplar idea de responderle algo al usuario que envia el mensaje
-    // y asi que los mensajes coincidan en el tiempo (con el cb)
-    // socket.use()
     socket.off("mensaje", createMessageListenner)
     socket.off("deleteMensaje", deleteMessageListenner)
     socket.off("newChat", createProvitionalChatListenner)
-    // socket.off
+    socket.off("newComent", createComentListenner)
+
+    socket.leave(id)
   })
   socket.on("validado", async ({ token, id }) => {
     const usuario = await comprobarJWT(token);
@@ -28,12 +29,16 @@ export const socketController = async (socket = new Socket()) => {
     }
     console.log("validado");
     socket.join(id)
-    //contemplar idea de responderle algo al usuario que envia el mensaje
-    // y asi que los mensajes coincidan en el tiempo (con el cb)
-    // socket.use()
+
     socket.on("mensaje", createMessageListenner)
     socket.on("deleteMensaje", deleteMessageListenner)
     socket.on("newChat", createProvitionalChatListenner)
-    // socket.off
+    socket.on("newComent", createComentListenner)
+  })
+  socket.on("openRoomComent", (idPost) => {
+    socket.join(idPost)
+  })
+  socket.on("leaveRoomComent", (idPost) => {
+    socket.leave(idPost)
   })
 }

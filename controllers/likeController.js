@@ -18,7 +18,15 @@ export const handleLike = async (req, res) => {
 
     }
     await post.save()
-    post = await Post.findById(idPost).populate("autor", "foto name username").populate("likes", "foto name username")
+    post = await Post.findById(idPost).populate({
+      path: "coments",
+      model: "Comentario",
+      populate: {
+        path: "autor",
+        model: "Usuario",
+        select: "foto name userName"
+      }
+    }).populate("autor", "foto name userName").populate("likes", "foto name userName")
 
     res.json({
       post: post.toObject()
