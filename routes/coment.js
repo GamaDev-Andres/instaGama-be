@@ -18,14 +18,12 @@ router.post("/create", [
 ], validarCampos, validarUser, createComent)
 
 router.put("/:idComent", [
-  check("idPost").custom(existePostPorId),
   check("idComent", "el id no es un id de mongo").isMongoId(),
   check("idComent").custom(existeComentPorId),
   check("text", "El text es obligatorio").not().isEmpty()
 ], validarCampos, validarUser, updateComent)
 
 router.delete("/:idComent", [
-  check("idPost").custom(existePostPorId),
   check("idComent", "el id no es un id de mongo").isMongoId(),
   check("idComent").custom(existeComentPorId),
 ], validarCampos, validarUser, deleteComent)

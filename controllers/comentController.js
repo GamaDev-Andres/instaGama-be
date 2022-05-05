@@ -28,7 +28,6 @@ export const createComent = async (req, res) => {
 export const deleteComent = async (req, res) => {
 
   const { idComent } = req.params
-  const { idPost } = req.body
   const { id } = req.usuario
 
   try {
@@ -44,7 +43,7 @@ export const deleteComent = async (req, res) => {
         msg: "Este usuario no tiene permitido eliminar este comentario."
       })
     }
-    const post = await Post.findById(idPost)
+    const post = await Post.findById(comentario.idPost)
     post.coments = post.coments.filter(coment => coment !== idComent)
 
     await Promise.all([Comment.findByIdAndDelete(idComent), post.save()])
