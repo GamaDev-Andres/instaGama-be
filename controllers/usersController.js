@@ -6,8 +6,19 @@ import Usuario from "../models/User.js"
 export const getUser = async (req, res = response) => {
   const { id } = req.params
   try {
-    const usuario = await Usuario.findOne({ userName: id })
-
+    const usuario = await Usuario.findOne({ userName: id }).populate({
+      path: "posts",
+      populate: {
+        path: "coments",
+        model: "Comentario",
+        populate: {
+          path: "autor",
+          model: "Usuario",
+          select: "foto name userName"
+        }
+      }
+    })
+    console.log(usuario);
     res.json({
       usuario,
     })

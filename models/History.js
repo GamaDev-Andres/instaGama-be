@@ -10,7 +10,7 @@ const HistorySchema = mongoose.Schema({
     required: true,
   },
   descripcion: String,
-  createdAt: { type: Date, expires: '5m', default: Date.now }
+  createdAt: { type: Date, expires: "24h", default: Date.now }
 }, {
   timestamps: true,
   expireAfterSeconds: 0

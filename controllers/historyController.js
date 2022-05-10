@@ -9,10 +9,11 @@ export const createHistory = async (req, res) => {
 
     const historia = new History({ url, descripcion: descripcion || "", autor: usuario.id })
 
-    await historia.save()
+    const [_, historiaWithPopulate] = await Promise.all([historia.save(), History.populate(historia, { path: "autor", select: "name userName foto" })])
+
     res.json({
       ok: true,
-      historia
+      historia: historiaWithPopulate
     })
 
   } catch (error) {
