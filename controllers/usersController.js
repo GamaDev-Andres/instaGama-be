@@ -3,6 +3,31 @@ import bcryptjs from 'bcryptjs'
 import generarJWT from '../helpers/jwt.js';
 import Usuario from "../models/User.js"
 
+export const searchUsers = async (req, res = response) => {
+  const { q } = req.query
+  try {
+    const usuarios = await Usuario.find({
+      $or: [
+        {
+          name: { "$regex": q, "$options": "i" }
+        },
+        {
+          userName: { "$regex": q, "$options": "i" }
+        }
+      ]
+    }).select("name userName foto")
+    res.json({
+      usuarios,
+    })
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      msg: "error en la peticion",
+    });
+  }
+
+}
 export const getUser = async (req, res = response) => {
   const { id } = req.params
   try {
