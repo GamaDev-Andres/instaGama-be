@@ -13,7 +13,6 @@ export const socketController = async (socket = new Socket()) => {
   const createComentListenner = (payload, cb) => createComent(payload, cb, socket)
   socket.on("logout", (id) => {
 
-    console.log("logout");
     socket.off("mensaje", createMessageListenner)
     socket.off("deleteMensaje", deleteMessageListenner)
     socket.off("newChat", createProvitionalChatListenner)
@@ -27,7 +26,6 @@ export const socketController = async (socket = new Socket()) => {
       console.log("user no validado con jwt");
       return
     }
-    console.log("validado");
     socket.join(id)
 
     socket.on("mensaje", createMessageListenner)

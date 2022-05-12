@@ -43,7 +43,6 @@ export const getUser = async (req, res = response) => {
         }
       }
     })
-    console.log(usuario);
     res.json({
       usuario,
     })

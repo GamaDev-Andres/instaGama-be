@@ -61,7 +61,6 @@ export const sendMessage = async (req, res) => {
     })
   }
 }
-//terminarlo
 export const deleteMessage = async (req, res) => {
 
   const { mid } = req.params

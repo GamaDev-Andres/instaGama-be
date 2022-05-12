@@ -6,8 +6,7 @@ export const createMessage = async ({ uid, mensaje, id }, cb, socket) => {
 
   try {
     const [userDestino, userRemitente] = await Promise.all([existeUsuarioPorId(uid), existeUsuarioPorId(id)])
-    // comprobar que si no le envio token si pase , y que tome el catcch
-    // de la fn existeUsuarioPorID
+
     if (!userDestino) {
       return cb({ error: "no existe userDestino" }, null)
     }
